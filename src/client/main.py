@@ -44,8 +44,7 @@ def getAnalysis(textList: List[str]) -> SubtreeAnalysis:
         pickle.dump(sentences, filePointer)
         filePointer.close()
 
-    nodes = [sentence.constituencyStructure for sentence in sentences.sentences]
-    analysis = SubtreeAnalysis(nodes)
+    analysis = SubtreeAnalysis(sentences)
     return analysis
 
 

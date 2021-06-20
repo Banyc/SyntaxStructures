@@ -9,24 +9,6 @@ from client.models.sentence import Sentence
 
 class SyntaxStructureParser:
 
-    # def _buildTree(self, root: spacy.tokens.underscore.Underscore) -> Node:
-    #     node = Node()
-    #     if len(root.labels) == 0:
-    #         parsedString: str = root.parse_string
-    #         trimmed = parsedString[1:-1]
-    #         splitted = trimmed.split()
-    #         node.pos = splitted[0]
-    #         node.terminal = splitted[1]
-    #         # return None
-    #     else:
-    #         node.pos = root.labels[0]
-
-    #     for child in root.children:
-    #         childNode = self._buildTree(child._)
-    #         if childNode is not None:
-    #             node.children.append(childNode)
-    #     return node
-
     def buildTree(parsedString: str) -> Node:
         dummyRootNode = Node()
         currentNode = dummyRootNode

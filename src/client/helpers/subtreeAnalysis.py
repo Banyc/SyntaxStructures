@@ -2,32 +2,33 @@
 
 from typing import Dict, List
 from client.models.node import *
-from client.models.treeInfo import TreeInfo
+from client.models.sentences import Sentences
+from client.models.treeInfo import *
 
 
 class SubtreeAnalysis:
-    def __init__(self, nodes: List[Node]) -> None:
+    def __init__(self, sentences: Sentences) -> None:
         # tuple -> treeId
         self.treeIds: Dict[tuple, int] = {}
-        # treeId -> treeInfo
-        self.treeInfos: Dict[int, TreeInfo] = {}
+        # treeId -> treeInfos
+        self.trees: Dict[int, TreeInfos] = {}
 
         # init
-        self._analyze(nodes)
+        self._analyze(sentences)
 
 
-    def _analyze(self, nodes: List[Node]) -> None:
-        for node in nodes:
-            _ = self.getTreeId(node, isUpdateCount=True)
+    def _analyze(self, sentences: Sentences) -> None:
+        for sentence in sentences.sentences:
+            _ = self.getTreeId(sentence.constituencyStructure, isUpdateCount=True, sourceSentence=sentence)
 
 
     # return tree ID
-    def getTreeId(self, root: Node, isUpdateCount: bool) -> int:
+    def getTreeId(self, root: Node, isUpdateCount: bool = False, sourceSentence: Sentence = None) -> int:
         if root is None:
             return 0
         childTreeIds: List[int] = []
         for child in root.children:
-            childTreeId = self.getTreeId(child, isUpdateCount)
+            childTreeId = self.getTreeId(child, isUpdateCount, sourceSentence)
             childTreeIds.append(childTreeId)
         
         treeIdsKey = (root.pos, tuple(childTreeIds))
@@ -36,16 +37,19 @@ class SubtreeAnalysis:
             # this tree has already exists
             treeId = self.treeIds[treeIdsKey]
 
-            if isUpdateCount:
-                self.treeInfos[treeId].count += 1
-        elif isUpdateCount:
+        else:
             # this tree does not exist
             treeId = len(self.treeIds) + 1
             self.treeIds[treeIdsKey] = treeId
 
-            newTreeInfo = TreeInfo()
-            newTreeInfo.count = 1
-            newTreeInfo.root = root
-            self.treeInfos[treeId] = newTreeInfo
-        
+        if isUpdateCount:
+            if root.terminal is None:
+                if not treeId in self.trees.keys():
+                    self.trees[treeId] = TreeInfos()
+
+                newTreeInfo = TreeInfo()
+                newTreeInfo.root = root
+                newTreeInfo.sourceSentence = sourceSentence
+                self.trees[treeId].treeInfos.append(newTreeInfo)
+
         return treeId
