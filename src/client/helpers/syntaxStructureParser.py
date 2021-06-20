@@ -10,6 +10,12 @@ from client.models.sentence import *
 from client.models.sentenceSet import *
 
 class SyntaxStructureParser:
+    def __init__(self) -> None:
+        self.nlp = None
+
+        self.nlp = spacy.load('en_core_web_md')
+        self.nlp.add_pipe(benepar.BeneparComponent("benepar_en3"))
+
 
     def buildTree(parsedString: str) -> Node:
         dummyRootNode = Node()
@@ -51,16 +57,14 @@ class SyntaxStructureParser:
         return dummyRootNode.children[0]
 
 
-    def getSentenceSet(text: str) -> SentenceSet:
+    def getSentenceSet(self, text: str) -> SentenceSet:
         # text = text.replace("\n", " ")
         text = re.sub("[\s\\t\\n]+", " ", text)
         text = re.sub("^\s+", "", text)
         sentenceSet = SentenceSet()
         sentenceSet.text = text
 
-        nlp = spacy.load('en_core_web_md')
-        nlp.add_pipe(benepar.BeneparComponent("benepar_en3"))
-        doc = nlp(text)
+        doc = self.nlp(text)
         for sent in list(doc.sents):
 
             sentence: Sentence = Sentence()
