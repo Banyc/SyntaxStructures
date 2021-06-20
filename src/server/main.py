@@ -10,6 +10,8 @@ api = Api(app)
 analyser = SyntaxAnalyser()
 sortedGroupedSyntaxTrees: List[TreeInfoSet] = None
 
+sortedGroupedSyntaxTrees = analyser.getSortedGroupedSubtreesFromFile("../../tests/text/1342-0.txt")
+
 
 class HelloWorld(Resource):
     def get(self):
