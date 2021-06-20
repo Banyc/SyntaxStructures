@@ -47,3 +47,11 @@ class MethodWrapper:
         sentenceSet = SyntaxStructureParser.getSentenceSet(text)
         digraph: str = SyntaxStructureParser.getVisualizer(sentenceSet.sentences[0].constituencyStructure)
         print(digraph)
+
+
+    def getSortedAnalysisFromFile(fileName: str) -> List[TreeInfoSet]:
+        filePointer = open(fileName, "r")
+        text = filePointer.read()
+        filePointer.close()
+        textList = text.split("\n\n")
+        return MethodWrapper.getSortedAnalysis(textList)
