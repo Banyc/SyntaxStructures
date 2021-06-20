@@ -3,6 +3,7 @@
 from typing import Tuple
 import spacy
 import benepar
+import re
 
 from client.models.node import *
 from client.models.sentence import *
@@ -51,6 +52,9 @@ class SyntaxStructureParser:
 
 
     def getSentenceSet(text: str) -> SentenceSet:
+        # text = text.replace("\n", " ")
+        text = re.sub("[\s\\t\\n]+", " ", text)
+        text = re.sub("^\s+", "", text)
         sentenceSet = SentenceSet()
         sentenceSet.text = text
 

@@ -6,22 +6,30 @@ from client.helpers.syntaxStructureParser import *
 from client.models.sentenceSet import *
 
 def main():
-    # sentenceSet = SyntaxStructureParser.getSentenceSet("The time for action is now. It's never too late to do something.")
-    # digraph: str = SyntaxStructureParser.getVisualizer(sentenceSet.sentences[0].constituencyStructure)
-    # print(digraph)
+    visualizeOneSentence()
 
-    testTextList = [
-        "The time for action is now. It's never too late to do something.",
-        "Hi (not really).",
-    ]
+    # testTextList = [
+    #     "The time for action is now. It's never too late to do something.",
+    #     "Hi (not really).",
+    # ]
 
-    analysis = getAnalysis(testTextList)
+    # analysis = getAnalysis(testTextList)
 
-    # sort
-    allTreeInfoSet = analysis.trees.values()
-    sortedTrees = sorted(allTreeInfoSet, key= lambda treeInfoSet: len(treeInfoSet.treeInfos), reverse=True)
+    # # sort
+    # allTreeInfoSet = analysis.trees.values()
+    # sortedTrees = sorted(allTreeInfoSet, key= lambda treeInfoSet: len(treeInfoSet.treeInfos), reverse=True)
 
     pass
+
+
+def visualizeOneSentence():
+    text = """
+          It is a truth universally acknowledged, that a single man in
+      possession of a good fortune, must be in want of a wife.
+    """
+    sentenceSet = SyntaxStructureParser.getSentenceSet(text)
+    digraph: str = SyntaxStructureParser.getVisualizer(sentenceSet.sentences[0].constituencyStructure)
+    print(digraph)
 
 
 def getAnalysis(textList: List[str]) -> SubtreeAnalysis:
