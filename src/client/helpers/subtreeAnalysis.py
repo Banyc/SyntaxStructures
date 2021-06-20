@@ -7,19 +7,21 @@ from client.models.treeInfo import *
 
 
 class SubtreeAnalysis:
-    def __init__(self, sentences: SentenceSet) -> None:
+    def __init__(self) -> None:
         # tuple -> treeId
         self.treeIds: Dict[tuple, int] = {}
         # treeId -> treeInfos
         self.trees: Dict[int, TreeInfoSet] = {}
 
-        # init
-        self._analyze(sentences)
 
-
-    def _analyze(self, sentences: SentenceSet) -> None:
-        for sentence in sentences.sentences:
+    def analyzeSentenceSet(self, sentenceSet: SentenceSet) -> None:
+        for sentence in sentenceSet.sentences:
             _ = self.getTreeId(sentence.constituencyStructure, isUpdateCount=True, sourceSentence=sentence)
+    
+
+    def analyzeManySentenceSet(self, sentenceSets: List[SentenceSet]) -> None:
+        for sentenceSet in sentenceSets:
+            self.analyzeSentenceSet(sentenceSet)
 
 
     # return tree ID

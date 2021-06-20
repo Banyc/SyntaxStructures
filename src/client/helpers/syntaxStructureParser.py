@@ -6,6 +6,7 @@ import benepar
 
 from client.models.node import *
 from client.models.sentence import *
+from client.models.sentenceSet import *
 
 class SyntaxStructureParser:
 
@@ -49,20 +50,25 @@ class SyntaxStructureParser:
         return dummyRootNode.children[0]
 
 
-    def getSentence(text: str) -> Sentence:
-        sentence: Sentence = Sentence()
-        sentence.text = text
+    def getSentenceSet(text: str) -> SentenceSet:
+        sentenceSet = SentenceSet()
+        sentenceSet.text = text
 
         nlp = spacy.load('en_core_web_md')
         nlp.add_pipe(benepar.BeneparComponent("benepar_en3"))
         doc = nlp(text)
-        sent = list(doc.sents)[0]
+        for sent in list(doc.sents):
 
-        sentence.parsedString = sent._.parse_string
-        # return self._buildTree(sent._)
-        sentence.constituencyStructure = SyntaxStructureParser.buildTree(sent._.parse_string)
-        
-        return sentence
+            sentence: Sentence = Sentence()
+            sentence.text = sent.text
+
+            sentence.parsedString = sent._.parse_string
+            # return self._buildTree(sent._)
+            sentence.constituencyStructure = SyntaxStructureParser.buildTree(sent._.parse_string)
+
+            sentenceSet.sentences.append(sentence)
+
+        return sentenceSet
 
 
     # return digraph fragment and nodeCount and nodeId

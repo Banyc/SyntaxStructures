@@ -6,8 +6,8 @@ from client.helpers.syntaxStructureParser import *
 from client.models.sentenceSet import *
 
 def main():
-    # sentence = SyntaxStructureParser.getSentence("The time for action is now. It's never too late to do something.")
-    # digraph: str = SyntaxStructureParser.getVisualizer(sentence.constituencyStructure)
+    # sentenceSet = SyntaxStructureParser.getSentenceSet("The time for action is now. It's never too late to do something.")
+    # digraph: str = SyntaxStructureParser.getVisualizer(sentenceSet.sentences[0].constituencyStructure)
     # print(digraph)
 
     testTextList = [
@@ -17,6 +17,7 @@ def main():
 
     analysis = getAnalysis(testTextList)
 
+    # sort
     allTreeInfoSet = analysis.trees.values()
     sortedTrees = sorted(allTreeInfoSet, key= lambda treeInfoSet: len(treeInfoSet.treeInfos), reverse=True)
 
@@ -24,29 +25,30 @@ def main():
 
 
 def getAnalysis(textList: List[str]) -> SubtreeAnalysis:
-    fileName = "sentences.pickle"
-    sentences: SentenceSet
+    fileName = "sentenceSets.pickle"
+    sentenceSets: List[SentenceSet]
 
     # load
     if os.path.exists(fileName):
         filePointer = open(fileName, "rb")
-        sentences = pickle.load(filePointer)
+        sentenceSets = pickle.load(filePointer)
         filePointer.close()
         pass
     else:
         # init
-        sentences = SentenceSet()
+        sentenceSets = []
         for text in textList:
-            sentence = SyntaxStructureParser.getSentence(text)
-            sentences.sentences.append(sentence)
-        # save 
+            newSentenceSet = SyntaxStructureParser.getSentenceSet(text)
+            sentenceSets.append(newSentenceSet)
+        # save
         if os.path.exists(fileName):
             os.remove(fileName)
         filePointer = open(fileName, "wb")
-        pickle.dump(sentences, filePointer)
+        pickle.dump(sentenceSets, filePointer)
         filePointer.close()
 
-    analysis = SubtreeAnalysis(sentences)
+    analysis = SubtreeAnalysis()
+    analysis.analyzeManySentenceSet(sentenceSets)
     return analysis
 
 
