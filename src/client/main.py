@@ -3,7 +3,7 @@ import pickle
 from typing import List
 from client.helpers.subtreeAnalysis import SubtreeAnalysis
 from client.helpers.syntaxStructureParser import *
-from client.models.sentences import *
+from client.models.sentenceSet import *
 
 def main():
     # sentence = SyntaxStructureParser.getSentence("The time for action is now. It's never too late to do something.")

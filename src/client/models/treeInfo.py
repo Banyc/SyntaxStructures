@@ -1,6 +1,6 @@
 
 from client.models.node import *
-from client.models.sentence import Sentence
+from client.models.sentence import *
 
 
 class TreeInfoSet:

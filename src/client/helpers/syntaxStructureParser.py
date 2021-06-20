@@ -4,8 +4,8 @@ from typing import Tuple
 import spacy
 import benepar
 
-from client.models.node import Node
-from client.models.sentence import Sentence
+from client.models.node import *
+from client.models.sentence import *
 
 class SyntaxStructureParser:
 

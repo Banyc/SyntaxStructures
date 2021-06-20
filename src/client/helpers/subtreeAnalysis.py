@@ -2,7 +2,7 @@
 
 from typing import Dict, List
 from client.models.node import *
-from client.models.sentences import SentenceSet
+from client.models.sentenceSet import *
 from client.models.treeInfo import *
 
 
