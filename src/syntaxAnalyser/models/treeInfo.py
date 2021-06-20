@@ -1,6 +1,6 @@
 
-from client.models.node import *
-from client.models.sentence import *
+from syntaxAnalyser.models.node import *
+from syntaxAnalyser.models.sentence import *
 
 
 class TreeInfoSet:

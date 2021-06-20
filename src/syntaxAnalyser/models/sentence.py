@@ -1,4 +1,4 @@
-from client.models.node import *
+from syntaxAnalyser.models.node import *
 
 
 class Sentence:

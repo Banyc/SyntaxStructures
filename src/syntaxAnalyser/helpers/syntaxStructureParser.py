@@ -5,9 +5,9 @@ import spacy
 import benepar
 import re
 
-from client.models.node import *
-from client.models.sentence import *
-from client.models.sentenceSet import *
+from syntaxAnalyser.models.node import *
+from syntaxAnalyser.models.sentence import *
+from syntaxAnalyser.models.sentenceSet import *
 
 class SyntaxStructureParser:
     def __init__(self) -> None:

@@ -1,12 +1,15 @@
 import os
 import pickle
 from typing import List
-from client.helpers.MethodWrapper import *
-from client.helpers.subtreeAnalysis import *
-from client.helpers.syntaxStructureParser import *
-from client.models.sentenceSet import *
+from syntaxAnalyser.syntaxAnalyser import *
+from syntaxAnalyser.helpers.subtreeAnalysis import *
+from syntaxAnalyser.helpers.syntaxStructureParser import *
+from syntaxAnalyser.models.sentenceSet import *
+
 
 def main():
-    pass
+    analyser = SyntaxAnalyser()
+    analyser.getSortedAnalysisFromFile("../tests/text/1342-0.txt")
+
 
 main()

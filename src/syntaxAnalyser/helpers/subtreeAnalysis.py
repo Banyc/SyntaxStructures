@@ -1,9 +1,9 @@
 
 
 from typing import Dict, List
-from client.models.node import *
-from client.models.sentenceSet import *
-from client.models.treeInfo import *
+from syntaxAnalyser.models.node import *
+from syntaxAnalyser.models.sentenceSet import *
+from syntaxAnalyser.models.treeInfo import *
 
 
 class SubtreeAnalysis:

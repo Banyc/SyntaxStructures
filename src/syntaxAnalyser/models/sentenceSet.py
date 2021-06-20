@@ -1,7 +1,7 @@
 
 from typing import List
 
-from client.models.sentence import *
+from syntaxAnalyser.models.sentence import *
 
 
 class SentenceSet:

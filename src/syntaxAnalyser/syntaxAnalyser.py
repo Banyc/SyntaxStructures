@@ -1,14 +1,17 @@
 import os
 import pickle
 from typing import List
-from client.helpers.subtreeAnalysis import *
-from client.helpers.syntaxStructureParser import *
-from client.models.sentenceSet import *
+from syntaxAnalyser.helpers.subtreeAnalysis import *
+from syntaxAnalyser.helpers.syntaxStructureParser import *
+from syntaxAnalyser.models.sentenceSet import *
 
-class MethodWrapper:
-    def getAnalysis(textList: List[str], tempFilePath: str) -> SubtreeAnalysis:
+
+class SyntaxAnalyser:
+    def __init__(self) -> None:
+        self.parser = SyntaxStructureParser()
+    
+    def getAnalysis(self, textList: List[str], tempFilePath: str) -> SubtreeAnalysis:
         sentenceSets: List[SentenceSet]
-        parser = SyntaxStructureParser()
 
         # load
         if os.path.exists(tempFilePath):
@@ -20,7 +23,7 @@ class MethodWrapper:
             # init
             sentenceSets = []
             for text in textList:
-                newSentenceSet = parser.getSentenceSet(text)
+                newSentenceSet = self.parser.getSentenceSet(text)
                 sentenceSets.append(newSentenceSet)
             # save
             if os.path.exists(tempFilePath):
@@ -34,8 +37,8 @@ class MethodWrapper:
         return analysis
     
     
-    def getSortedAnalysis(textList: List[str], tempFilePath: str) -> List[TreeInfoSet]:
-        analysis = MethodWrapper.getAnalysis(textList, tempFilePath)
+    def getSortedAnalysis(self, textList: List[str], tempFilePath: str) -> List[TreeInfoSet]:
+        analysis = self.getAnalysis(textList, tempFilePath)
 
         # sort
         allTreeInfoSet = analysis.trees.values()
@@ -43,16 +46,15 @@ class MethodWrapper:
         return sortedTrees
 
 
-    def visualizeFirstSentence(text: str):
-        parser = SyntaxStructureParser()
-        sentenceSet = parser.getSentenceSet(text)
+    def visualizeFirstSentence(self, text: str):
+        sentenceSet = self.parser.getSentenceSet(text)
         digraph: str = SyntaxStructureParser.getVisualizer(sentenceSet.sentences[0].constituencyStructure)
         print(digraph)
 
 
-    def getSortedAnalysisFromFile(fileName: str) -> List[TreeInfoSet]:
+    def getSortedAnalysisFromFile(self, fileName: str) -> List[TreeInfoSet]:
         filePointer = open(fileName, "r", encoding="utf-8")
         text = filePointer.read()
         filePointer.close()
         textList = text.split("\n\n")
-        return MethodWrapper.getSortedAnalysis(textList, tempFilePath = fileName + ".pickle")
+        return self.getSortedAnalysis(textList, tempFilePath = fileName + ".pickle")
