@@ -30,8 +30,8 @@ class StartGroupingSubtreesOnFile(Resource):
 class GetGraphOfFirstTreeOfEachFreqencyGroup(Resource):
     def post(self):
         json_data = request.get_json(force=True)
-        fromGroupIndex = json_data["fromGroup"]
-        toGroupIndex = json_data["toGroup"]
+        fromGroupIndex = json_data["fromGroupIndex"]
+        toGroupIndex = json_data["toGroupIndex"]
 
         selected = sortedGroupedSyntaxTrees[fromGroupIndex:toGroupIndex]
         digraphs = []
@@ -52,8 +52,8 @@ class GetGraphOfTreesInAGroup(Resource):
     def post(self):
         json_data = request.get_json(force=True)
         groupIndex = json_data["groupIndex"]
-        fromOffsetIndex = json_data["fromOffset"]
-        toOffsetIndex = json_data["toOffset"]
+        fromOffsetIndex = json_data["fromOffsetIndex"]
+        toOffsetIndex = json_data["toOffsetIndex"]
 
         selectedGroup = sortedGroupedSyntaxTrees[groupIndex]
         selectedTreeInfos = selectedGroup.treeInfos[fromOffsetIndex:toOffsetIndex]
