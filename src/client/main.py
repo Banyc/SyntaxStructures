@@ -17,13 +17,15 @@ def main():
 
     analysis = getAnalysis(testTextList)
 
+    allTreeInfoSet = analysis.trees.values()
+    sortedTrees = sorted(allTreeInfoSet, key= lambda treeInfoSet: len(treeInfoSet.treeInfos), reverse=True)
 
     pass
 
 
 def getAnalysis(textList: List[str]) -> SubtreeAnalysis:
     fileName = "sentences.pickle"
-    sentences: Sentences
+    sentences: SentenceSet
 
     # load
     if os.path.exists(fileName):
@@ -33,7 +35,7 @@ def getAnalysis(textList: List[str]) -> SubtreeAnalysis:
         pass
     else:
         # init
-        sentences = Sentences()
+        sentences = SentenceSet()
         for text in textList:
             sentence = SyntaxStructureParser.getSentence(text)
             sentences.sentences.append(sentence)

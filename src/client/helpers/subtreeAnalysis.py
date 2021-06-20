@@ -2,22 +2,22 @@
 
 from typing import Dict, List
 from client.models.node import *
-from client.models.sentences import Sentences
+from client.models.sentences import SentenceSet
 from client.models.treeInfo import *
 
 
 class SubtreeAnalysis:
-    def __init__(self, sentences: Sentences) -> None:
+    def __init__(self, sentences: SentenceSet) -> None:
         # tuple -> treeId
         self.treeIds: Dict[tuple, int] = {}
         # treeId -> treeInfos
-        self.trees: Dict[int, TreeInfos] = {}
+        self.trees: Dict[int, TreeInfoSet] = {}
 
         # init
         self._analyze(sentences)
 
 
-    def _analyze(self, sentences: Sentences) -> None:
+    def _analyze(self, sentences: SentenceSet) -> None:
         for sentence in sentences.sentences:
             _ = self.getTreeId(sentence.constituencyStructure, isUpdateCount=True, sourceSentence=sentence)
 
@@ -45,11 +45,12 @@ class SubtreeAnalysis:
         if isUpdateCount:
             if root.terminal is None:
                 if not treeId in self.trees.keys():
-                    self.trees[treeId] = TreeInfos()
+                    self.trees[treeId] = TreeInfoSet()
 
                 newTreeInfo = TreeInfo()
                 newTreeInfo.root = root
                 newTreeInfo.sourceSentence = sourceSentence
+                newTreeInfo.treeId = treeId
                 self.trees[treeId].treeInfos.append(newTreeInfo)
 
         return treeId
