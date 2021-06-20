@@ -1,7 +1,7 @@
 import os
 import pickle
 from typing import List
-from syntaxAnalyser.helpers.subtreeAnalysis import *
+from syntaxAnalyser.helpers.subtreeGrouper import *
 from syntaxAnalyser.helpers.syntaxStructureParser import *
 from syntaxAnalyser.models.sentenceSet import *
 
@@ -10,7 +10,7 @@ class SyntaxAnalyser:
     def __init__(self) -> None:
         self.parser = SyntaxStructureParser()
     
-    def getAnalysis(self, textList: List[str], tempFilePath: str) -> SubtreeAnalysis:
+    def getSubtreeGrouper(self, textList: List[str], tempFilePath: str) -> SubtreeGrouper:
         sentenceSets: List[SentenceSet]
 
         # load
@@ -32,13 +32,13 @@ class SyntaxAnalyser:
             pickle.dump(sentenceSets, filePointer)
             filePointer.close()
 
-        analysis = SubtreeAnalysis()
-        analysis.analyzeManySentenceSet(sentenceSets)
-        return analysis
+        grouper = SubtreeGrouper()
+        grouper.analyzeManySentenceSet(sentenceSets)
+        return grouper
     
     
-    def getSortedAnalysis(self, textList: List[str], tempFilePath: str) -> List[TreeInfoSet]:
-        analysis = self.getAnalysis(textList, tempFilePath)
+    def getSortedGroupedSubtrees(self, textList: List[str], tempFilePath: str) -> List[TreeInfoSet]:
+        analysis = self.getSubtreeGrouper(textList, tempFilePath)
 
         # sort
         allTreeInfoSet = analysis.trees.values()
@@ -52,9 +52,9 @@ class SyntaxAnalyser:
         print(digraph)
 
 
-    def getSortedAnalysisFromFile(self, fileName: str) -> List[TreeInfoSet]:
+    def getSortedGroupedSubtreesFromFile(self, fileName: str) -> List[TreeInfoSet]:
         filePointer = open(fileName, "r", encoding="utf-8")
         text = filePointer.read()
         filePointer.close()
         textList = text.split("\n\n")
-        return self.getSortedAnalysis(textList, tempFilePath = fileName + ".pickle")
+        return self.getSortedGroupedSubtrees(textList, tempFilePath = fileName + ".pickle")

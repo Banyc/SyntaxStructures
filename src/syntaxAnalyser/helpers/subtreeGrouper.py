@@ -6,7 +6,7 @@ from syntaxAnalyser.models.sentenceSet import *
 from syntaxAnalyser.models.treeInfo import *
 
 
-class SubtreeAnalysis:
+class SubtreeGrouper:
     def __init__(self) -> None:
         # tuple -> treeId
         self.treeIds: Dict[tuple, int] = {}
