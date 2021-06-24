@@ -44,8 +44,10 @@ class SubtreeGrouper:
             treeId = len(self.treeIds) + 1
             self.treeIds[treeIdsKey] = treeId
 
+        # update self.trees
         if isUpdateCount:
-            if root.terminal is None:
+            # only collect trees that begin with root node with more than one child
+            if root.terminal is None and len(root.children) > 1:
                 if not treeId in self.trees.keys():
                     self.trees[treeId] = TreeInfoSet()
 
