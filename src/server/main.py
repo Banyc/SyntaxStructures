@@ -34,17 +34,20 @@ class GetGraphOfFirstTreeOfEachFreqencyGroup(Resource):
         toGroupIndex = json_data["toGroupIndex"]
 
         selected = sortedGroupedSyntaxTrees[fromGroupIndex:toGroupIndex]
-        digraphs = []
-        counts = []
+        groups: List[dict] = []
+        currentGroupIndex = fromGroupIndex
         for treeInfoSet in selected:
             firstTreeInfo = treeInfoSet.treeInfos[0]
             digraph = SyntaxStructureParser.getVisualizer(firstTreeInfo.root)
-            digraphs.append(digraph)
-            counts.append(len(treeInfoSet.treeInfos))
+            groups.append({
+                'groupIndex': currentGroupIndex,
+                'diagraph': digraph,
+                'count': len(treeInfoSet.treeInfos)
+            })
+            currentGroupIndex += 1
 
         return {
-            'digraphs': digraphs,
-            'counts': counts,
+            'groups': groups,
             'fromGroupIndex': fromGroupIndex,
             'toGroupIndex': toGroupIndex,
             'numGroups': len(sortedGroupedSyntaxTrees),
