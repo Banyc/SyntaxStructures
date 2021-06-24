@@ -19,8 +19,8 @@ class HelloWorld(Resource):
 
 
 class StartGroupingSubtreesOnFile(Resource):
-    global sortedGroupedSyntaxTrees
     def post(self):
+        global sortedGroupedSyntaxTrees
         json_data = request.get_json(force=True)
         filePath = json_data["filePath"]
         sortedGroupedSyntaxTrees = analyser.getSortedGroupedSubtreesFromFile(filePath)
@@ -44,7 +44,10 @@ class GetGraphOfFirstTreeOfEachFreqencyGroup(Resource):
 
         return {
             'digraphs': digraphs,
-            'counts': counts
+            'counts': counts,
+            'fromGroupIndex': fromGroupIndex,
+            'toGroupIndex': toGroupIndex,
+            'numGroups': len(sortedGroupedSyntaxTrees),
         }
 
 
@@ -64,11 +67,11 @@ class GetGraphOfTreesInAGroup(Resource):
 
         return {
             'digraphs': digraphs,
+            'groupIndex': groupIndex,
+            'fromOffsetIndex': fromOffsetIndex,
+            'toOffsetIndex': toOffsetIndex,
+            'numOffsets': len(selectedGroup.treeInfos),
         }
-
-
-
-
 
 
 api.add_resource(HelloWorld, '/')
