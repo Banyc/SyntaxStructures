@@ -1,0 +1,131 @@
+@page "/"
+@using System.Net.Http.Json
+@inject IHttpClientFactory ClientFactory
+@using BlazorWebsite.Models.SyntaxVisualization
+
+@* StartGroupingSubtreesOnFile *@
+<Row>
+    <Col>
+        <Input Placeholder="File path" @bind-Value="StartGroupingSubtreesOnFileRequestDto.FilePath" />
+    </Col>
+    <br/>
+    <Col>
+        <Button OnClick="@btnStartGroupingSubtreesOnFile_OnClick" Loading="IsLoading_btnStartGroupingSubtreesOnFile">Change File</Button>
+    </Col>
+</Row>
+<br/>
+
+@* group preview *@
+<Table DataSource="@GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto.Groups"
+       Total="@GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto.NumGroups"
+       PageIndex="@GroupPreviewPageConfig.PageIndex"
+       @bind-PageSize="@GroupPreviewPageConfig.PageSize"
+       OnPageIndexChange="@tableGroupPreview_OnPageIndexChange">
+    <Column @bind-Field="@context.GroupIndex" />
+    @* <Column @bind-Field="@context.Diagraph" /> *@
+    <Column @bind-Field="@context.Diagraph">
+        <img src='https://g.gravizo.com/svg?@context.Diagraph'/>
+    </Column>
+    <Column @bind-Field="@context.Count" />
+</Table>
+@* 
+<Row>
+    <Col>
+        <p>fromGroupIndex</p>
+        <Input Placeholder="fromGroupIndex" @bind-Value="@GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto.FromGroupIndex" />
+    <Col>
+    <br/>
+    </Col>
+        <p>toGroupIndex</p>
+        <Input Placeholder="toGroupIndex" @bind-Value="@GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto.ToGroupIndex" />
+    </Col>
+    <br/>
+    <Col>
+        <Button Type="primary" OnClick="@btnGetGraphOfFirstTreeOfEachFreqencyGroup_OnClick">GetGraphOfFirstTreeOfEachFreqencyGroup</Button>
+    </Col>
+</Row>
+<br/> *@
+
+<Row>
+    <Col>
+        <p>groupIndex</p>
+        <Input Placeholder="groupIndex" @bind-Value="@GetGraphOfTreesInAGroupRequestDto.GroupIndex" />
+    </Col>
+    <br/>
+    <Col>
+        <p>fromOffsetIndex</p>
+        <Input Placeholder="fromOffsetIndex" @bind-Value="@GetGraphOfTreesInAGroupRequestDto.FromOffsetIndex" />
+    </Col>
+    <br/>
+    <Col>
+        <p>toOffsetIndex</p>
+        <Input Placeholder="toOffsetIndex" @bind-Value="@GetGraphOfTreesInAGroupRequestDto.ToOffsetIndex" />
+    </Col>
+    <br/>
+    <Col>
+        <Button Type="primary">GetGraphOfTreesInAGroup</Button>
+    </Col>
+</Row>
+<br/>
+
+<Button Type="primary">Hello World!</Button>
+
+
+
+@code
+{
+    private HttpClient Backend { get; set; }
+
+    private bool IsLoading_btnStartGroupingSubtreesOnFile { get; set; } = false;
+
+    private StartGroupingSubtreesOnFileRequestDto StartGroupingSubtreesOnFileRequestDto { get; set; } = new();
+    private GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto { get; set; } = new();
+    private GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto { get; set; } = new();
+    private GetGraphOfTreesInAGroupRequestDto GetGraphOfTreesInAGroupRequestDto { get; set; } = new();
+
+
+    private PageConfig GroupPreviewPageConfig { get; set; } = new() { PageSize = 5 };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.Backend = this.ClientFactory.CreateClient("server");
+        await UpdateTableGroupPreview();
+    }
+
+    private async Task btnStartGroupingSubtreesOnFile_OnClick()
+    {
+        IsLoading_btnStartGroupingSubtreesOnFile = true;
+        var res = await this.Backend.PostAsJsonAsync("/StartGroupingSubtreesOnFile", this.StartGroupingSubtreesOnFileRequestDto);
+        
+        IsLoading_btnStartGroupingSubtreesOnFile = false;
+    }
+
+    // private async Task btnGetGraphOfFirstTreeOfEachFreqencyGroup_OnClick()
+    // {
+    //     var res = await this.Backend.PostAsJsonAsync("/GetGraphOfFirstTreeOfEachFreqencyGroup", this.GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto);
+    //     var body = await res.Content.ReadFromJsonAsync<GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto>();
+    //     this.GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto = body;
+    // }
+
+    private async Task tableGroupPreview_OnPageIndexChange(PaginationEventArgs args)
+    {
+        this.GroupPreviewPageConfig.PageIndex = args.Page;
+        await UpdateTableGroupPreview();
+    }
+
+    private async Task UpdateTableGroupPreview()
+    {
+        var range = this.GroupPreviewPageConfig.GetRange();
+        GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto request = new()
+        {
+            FromGroupIndex = range.Item1,
+            ToGroupIndex = range.Item2,
+        };
+
+        var res = await this.Backend.PostAsJsonAsync("/GetGraphOfFirstTreeOfEachFreqencyGroup", request);
+        var body = await res.Content.ReadFromJsonAsync<GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto>();
+        this.GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto = body;
+    }
+
+}

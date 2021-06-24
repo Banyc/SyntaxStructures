@@ -5,13 +5,35 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Web",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildWeb",
+            "program": "${workspaceFolder}/src/BlazorWebsite/bin/Debug/net5.0/BlazorWebsite.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/BlazorWebsite",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "Client",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/client/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/src",
-            "env": {"PYTHONPATH": "${workspaceFolder}/src"}
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
         },
         {
             "name": "Server",
@@ -20,7 +42,18 @@
             "program": "${workspaceFolder}/src/server/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/src/server",
-            "env": {"PYTHONPATH": "${workspaceFolder}/src"}
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Compound",
+            "configurations": [
+                "Server",
+                "Web"
+            ]
         }
     ]
 }
