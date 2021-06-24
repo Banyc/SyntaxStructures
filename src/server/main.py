@@ -63,13 +63,19 @@ class GetGraphOfTreesInAGroup(Resource):
 
         selectedGroup = sortedGroupedSyntaxTrees[groupIndex]
         selectedTreeInfos = selectedGroup.treeInfos[fromOffsetIndex:toOffsetIndex]
-        digraphs = []
+        sentences: List[dict] = []
+        currentOffsetIndex = fromOffsetIndex
         for treeInfo in selectedTreeInfos:
             digraph = SyntaxStructureParser.getVisualizer(treeInfo.root)
-            digraphs.append(digraph)
+            sentences.append({
+                'offsetIndex': currentOffsetIndex,
+                'digraph': digraph,
+                'fullText': treeInfo.sourceSentence.text
+            })
+            currentOffsetIndex += 1
 
         return {
-            'digraphs': digraphs,
+            'sentences': sentences,
             'groupIndex': groupIndex,
             'fromOffsetIndex': fromOffsetIndex,
             'toOffsetIndex': toOffsetIndex,

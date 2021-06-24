@@ -27,49 +27,27 @@
         <img src='https://g.gravizo.com/svg?@context.Diagraph'/>
     </Column>
     <Column @bind-Field="@context.Count" />
+    <ActionColumn Title="Acton">
+        <Space>
+            <SpaceItem>
+                <Button OnClick="@(() => UpdateTableSentencesInAGroup(context.GroupIndex))">Details</Button>
+            </SpaceItem>
+        </Space>
+    </ActionColumn>
 </Table>
-@* 
-<Row>
-    <Col>
-        <p>fromGroupIndex</p>
-        <Input Placeholder="fromGroupIndex" @bind-Value="@GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto.FromGroupIndex" />
-    <Col>
-    <br/>
-    </Col>
-        <p>toGroupIndex</p>
-        <Input Placeholder="toGroupIndex" @bind-Value="@GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto.ToGroupIndex" />
-    </Col>
-    <br/>
-    <Col>
-        <Button Type="primary" OnClick="@btnGetGraphOfFirstTreeOfEachFreqencyGroup_OnClick">GetGraphOfFirstTreeOfEachFreqencyGroup</Button>
-    </Col>
-</Row>
-<br/> *@
 
-<Row>
-    <Col>
-        <p>groupIndex</p>
-        <Input Placeholder="groupIndex" @bind-Value="@GetGraphOfTreesInAGroupRequestDto.GroupIndex" />
-    </Col>
-    <br/>
-    <Col>
-        <p>fromOffsetIndex</p>
-        <Input Placeholder="fromOffsetIndex" @bind-Value="@GetGraphOfTreesInAGroupRequestDto.FromOffsetIndex" />
-    </Col>
-    <br/>
-    <Col>
-        <p>toOffsetIndex</p>
-        <Input Placeholder="toOffsetIndex" @bind-Value="@GetGraphOfTreesInAGroupRequestDto.ToOffsetIndex" />
-    </Col>
-    <br/>
-    <Col>
-        <Button Type="primary">GetGraphOfTreesInAGroup</Button>
-    </Col>
-</Row>
-<br/>
-
-<Button Type="primary">Hello World!</Button>
-
+@* sentences in a group *@
+<Table DataSource="@GetGraphOfTreesInAGroupResponseDto.Sentences"
+       Total="@GetGraphOfTreesInAGroupResponseDto.NumOffsets"
+       PageIndex="@SentencesInAGroupPageConfig.PageIndex"
+       @bind-PageSize="@SentencesInAGroupPageConfig.PageSize"
+       OnPageIndexChange="@tableSentencesInAGroup_OnPageIndexChange">
+    <Column @bind-Field="@context.OffsetIndex" />
+    <Column @bind-Field="@context.Digraph">
+        <img src='https://g.gravizo.com/svg?@context.Digraph'/>
+    </Column>
+    <Column @bind-Field="@context.FullText" />
+</Table>
 
 
 @code
@@ -82,9 +60,13 @@
     private GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto { get; set; } = new();
     private GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto { get; set; } = new();
     private GetGraphOfTreesInAGroupRequestDto GetGraphOfTreesInAGroupRequestDto { get; set; } = new();
+    private GetGraphOfTreesInAGroupResponseDto GetGraphOfTreesInAGroupResponseDto { get; set; } = new();
+
+    private int SelectedGroupIndex { get; set; }
 
 
     private PageConfig GroupPreviewPageConfig { get; set; } = new() { PageSize = 5 };
+    private PageConfig SentencesInAGroupPageConfig { get; set; } = new() { PageSize = 5 };
 
 
     protected override async Task OnInitializedAsync()
@@ -100,13 +82,6 @@
         
         IsLoading_btnStartGroupingSubtreesOnFile = false;
     }
-
-    // private async Task btnGetGraphOfFirstTreeOfEachFreqencyGroup_OnClick()
-    // {
-    //     var res = await this.Backend.PostAsJsonAsync("/GetGraphOfFirstTreeOfEachFreqencyGroup", this.GetGraphOfFirstTreeOfEachFreqencyGroupRequestDto);
-    //     var body = await res.Content.ReadFromJsonAsync<GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto>();
-    //     this.GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto = body;
-    // }
 
     private async Task tableGroupPreview_OnPageIndexChange(PaginationEventArgs args)
     {
@@ -128,4 +103,28 @@
         this.GetGraphOfFirstTreeOfEachFreqencyGroupResponseDto = body;
     }
 
+    private async Task tableSentencesInAGroup_OnPageIndexChange(PaginationEventArgs args)
+    {
+        this.SentencesInAGroupPageConfig.PageIndex = args.Page;
+        await UpdateTableSentencesInAGroup();
+    }
+
+    private async Task UpdateTableSentencesInAGroup(int groupIndex = -1)
+    {
+        if (groupIndex > -1)
+        {
+            this.SelectedGroupIndex = groupIndex;
+        }
+        var range = this.SentencesInAGroupPageConfig.GetRange();
+        GetGraphOfTreesInAGroupRequestDto request = new()
+        {
+            FromOffsetIndex = range.Item1,
+            ToOffsetIndex = range.Item2,
+            GroupIndex = this.SelectedGroupIndex,
+        };
+
+        var res = await this.Backend.PostAsJsonAsync("/GetGraphOfTreesInAGroup", request);
+        var body = await res.Content.ReadFromJsonAsync<GetGraphOfTreesInAGroupResponseDto>();
+        this.GetGraphOfTreesInAGroupResponseDto = body;
+    }
 }
