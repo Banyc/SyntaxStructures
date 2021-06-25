@@ -22,9 +22,9 @@
        @bind-PageSize="@GroupPreviewPageConfig.PageSize"
        OnPageIndexChange="@tableGroupPreview_OnPageIndexChange">
     <Column @bind-Field="@context.GroupIndex" />
-    @* <Column @bind-Field="@context.Diagraph" /> *@
-    <Column @bind-Field="@context.Diagraph">
-        <img src='https://g.gravizo.com/svg?@context.Diagraph'/>
+    @* <Column @bind-Field="@context.Digraph" /> *@
+    <Column @bind-Field="@context.Digraph">
+        <img src='https://g.gravizo.com/svg?@context.Digraph'/>
     </Column>
     <Column @bind-Field="@context.Count" />
     <ActionColumn Title="Acton">

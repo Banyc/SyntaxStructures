@@ -5,7 +5,7 @@ namespace BlazorWebsite.Models.SyntaxVisualization
     public class GroupedSentence
     {
         public int GroupIndex { get; set; }
-        public string Diagraph { get; set; }
+        public string Digraph { get; set; }
         public int Count { get; set; }
     }
 

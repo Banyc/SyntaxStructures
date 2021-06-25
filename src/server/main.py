@@ -41,7 +41,7 @@ class GetGraphOfFirstTreeOfEachFreqencyGroup(Resource):
             digraph = SyntaxStructureParser.getVisualizer(firstTreeInfo.root)
             groups.append({
                 'groupIndex': currentGroupIndex,
-                'diagraph': digraph,
+                'digraph': digraph,
                 'count': len(treeInfoSet.treeInfos)
             })
             currentGroupIndex += 1
